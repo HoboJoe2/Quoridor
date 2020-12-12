@@ -34,7 +34,3 @@ def create_board(rows, columns):
             cur_tile.check_tile_size()
             cur_board.board_matrix.append(cur_tile)
     return cur_board
-
-
-
-
