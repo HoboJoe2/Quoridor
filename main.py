@@ -2,8 +2,6 @@ import pygame as pg
 import Player
 import Board
 
-# testing git commit
-
 pg.init()
 pg.font.init()
 
@@ -21,22 +19,40 @@ pg.display.set_caption("Quoridor")
 win.fill(BLACK)
 
 
-def place_wall(player, mouse_pos, rectangle_sprites, button_clicked, board,
-               surface):
-    clicked_sprites = [r for r in rectangle_sprites if
-                       r.collidepoint(mouse_pos)]
+def change_rect_color(rect, player, surface):
+    new_rect = pg.draw.rect(surface, player.color, (rect.left,
+                            rect.top, rect.width,
+                            rect.height))
+    return new_rect
 
-    if button_clicked == "left":
-        top_left_pos = clicked_sprites[0].topleft
-        width = clicked_sprites[0].width
-        height = clicked_sprites[0].height * 3
-        wall = (surface, player.color, (top_left_pos[0], top_left_pos[1],
-                                        width, height))
-        board.list_of_walls.append(wall)
+
+def place_wall(player, mouse_pos, rectangle_matrix, button_clicked, board,
+               surface):
+
+    clicked_rectangle = None
+    clicked_rect_row = 0
+    clicked_rect_col = 0
+    for row in rectangle_matrix:
+        for rect in row:
+            if rect.collidepoint(mouse_pos):
+                clicked_rectangle = rect
+                clicked_rect_row = rectangle_matrix.index(row)
+                clicked_rect_col = row.index(clicked_rectangle)
+
+    if button_clicked == "left":  # replace
+        # rectangles with different coloured ones
+        for n in [0, 1, 2]:
+            new_rectangle = change_rect_color(rectangle_matrix
+                                                   [clicked_rect_row + n]
+                                                   [clicked_rect_col], player,
+                                                   surface)
+            print(new_rectangle)
+            rectangle_matrix[clicked_rect_row + n][clicked_rect_col] = new_rectangle
+
     elif button_clicked == "right":
-        top_left_pos = clicked_sprites[0].topleft
-        width = clicked_sprites[0].width * 3
-        height = clicked_sprites[0].height
+        top_left_pos = clicked_rectangle.topleft
+        width = clicked_rectangle.width * 3
+        height = clicked_rectangle.height
         wall = (surface, player.color, (top_left_pos[0], top_left_pos[1],
                                         width, height))
         board.list_of_walls.append(wall)
@@ -58,31 +74,9 @@ def move_piece(player, direction):
     return print(player, direction)
 
 
-def draw_board(board, surface):
-    tile_width = (WIDTH / board.actual_cols)
-    tile_height = (HEIGHT / board.actual_rows)
-    square_dimensions = {"width": tile_width, "height": tile_height}
-    rects = []
-
-    for tile in board.board_matrix:
-        x_pos = tile_width * tile.y
-        y_pos = tile_height * tile.x
-        if tile.isSmall:
-            color = GRAY
-        else:
-            color = WHITE
-
-        new_rect = pg.draw.rect(surface,
-                                color, (int(x_pos), int(y_pos),
-                                        int(tile_width), int(tile_height)))
-        rects.append(new_rect)
-    return square_dimensions, rects
-
-
 # draw the board and get the dimensions
 # (in order to draw the pieces and walls)
 cur_board = Board.create_board(9, 9)
-tile_dimensions, rectangles = draw_board(cur_board, win)
 
 if __name__ == "__main__":
     run = True
@@ -96,9 +90,9 @@ if __name__ == "__main__":
         players_list = Player.create_players(number_of_players)
 
         # draw the board
-
+        Board.draw_board(cur_board, win)
         # draw the pieces
-
+        Player.draw_pieces(cur_board, win)
         # draw the walls
         for w in cur_board.list_of_walls:
             pg.draw.rect(w[0], w[1], w[2])
@@ -120,12 +114,13 @@ if __name__ == "__main__":
             elif event.type == pg.MOUSEBUTTONUP and event.button == 1:
                 # left click
                 click_pos = pg.mouse.get_pos()
-                place_wall(player_to_move, click_pos, rectangles,
+                place_wall(player_to_move, click_pos,
+                           cur_board.rectangle_matrix,
                            "left", cur_board, win)
             elif event.type == pg.MOUSEBUTTONUP and event.button == 3:
                 # right click
                 click_pos = pg.mouse.get_pos()
                 place_wall(player_to_move, click_pos,
-                           rectangles, "right", cur_board, win)
+                           cur_board.rectangle_matrix, "right", cur_board, win)
 
 pg.quit()

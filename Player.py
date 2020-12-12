@@ -60,3 +60,7 @@ def change_turn():
             player_index = list_of_players.index(player)
             list_of_players[player_index + 1].is_their_turn = True
             return
+
+
+def draw_pieces(board, surface):
+    pass
