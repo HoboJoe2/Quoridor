@@ -1,3 +1,6 @@
+import Colors
+
+
 class Board:
     def __init__(self, num_rows, num_cols):
         self.num_rows = num_rows
@@ -5,34 +8,43 @@ class Board:
         self.actual_rows = ((self.num_rows * 2) - 1)
         self.actual_cols = ((self.num_cols * 2) - 1)
         self.tile_matrix = []
+        self.create_starting_matrix()
+
+    def create_starting_matrix(self):
+        for row in range(self.actual_rows):
+            cur_row = []
+            for col in range(self.actual_cols):
+                cur_tile = Tile(row, col, self)
+                cur_row.append(cur_tile)
+            self.tile_matrix.append(cur_row)
+        return
+
+    def print_board(self):
+        for row in self.tile_matrix:
+            for tile in row:
+                print(tile.char, end="")
+            print()
 
     def __repr__(self):
         return f"Board({self.num_rows}, {self.num_cols})"
 
 
 class Tile:
-    def __init__(self, x, y, board):
-        self.x = x
-        self.y = y
+    def __init__(self, row, col, board):
+        self.row = row
+        self.col = col
         self.board = board
-        self.isSmall = False
-        self.check_tile_size()
+        self.char = ""
+        self.color = f"{Colors.LIGHT_PURPLE}"
+        self.set_initial_values()
 
-    def check_tile_size(self):
-        if self.x % 2 != 0 or self.y % 2 != 0:  # check if row is odd
-            self.isSmall = True
-            return
-        else:
-            self.isSmall = False
-            return
-
-
-def create_board(rows, columns):
-    cur_board = Board(rows, columns)
-    for row in range(cur_board.actual_rows):
-        cur_row = []
-        for col in range(cur_board.actual_cols):
-            cur_tile = Tile(row, col, cur_board)
-            cur_row.append(cur_tile)
-        cur_board.tile_matrix.append(cur_row)
-    return cur_board
+    def set_initial_values(self):
+        if self.row % 2 == 0 and self.col % 2 == 0:  # big tile
+            self.char = f"{Colors.BLACK}■"
+        elif self.row % 2 == 0:  # on a row with big tiles
+            self.char = f"{Colors.LIGHT_GRAY}|"
+        elif self.col % 2 == 0:  # on a col with big tiles
+            self.char = f"{Colors.LIGHT_GRAY}-"
+        elif self.row % 2 != 0 and self.col % 2 != 0:
+            self.char = f"{Colors.LIGHT_GRAY}+"
+        return

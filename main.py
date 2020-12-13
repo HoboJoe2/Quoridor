@@ -22,20 +22,15 @@ def move_piece(player, direction):
     return print(player, direction)
 
 
-# draw the board and get the dimensions
-# (in order to draw the pieces and walls)
-cur_board = Board.create_board(9, 9)
-
 if __name__ == "__main__":
 
     # create the players
     number_of_players = 2  # TODO give player choice
-    players_list = Player.create_players(number_of_players)
+    Player.create_players(number_of_players)
 
-    # draw the board
-    Board.draw_board(cur_board)
+    # create the board
+    board = Board.Board(9, 9)
 
-    # draw the pieces
-    Player.draw_pieces(cur_board)
+    board.print_board()
 
-    player_to_move = Player.get_current_player(players_list)
+    player_to_move = Player.get_current_player(Player.list_of_players)
