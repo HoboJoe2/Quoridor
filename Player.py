@@ -1,3 +1,5 @@
+import Colors
+
 list_of_players = []
 
 
@@ -17,34 +19,28 @@ class Player:
         return f"Player({self.color}, {self.is_their_turn}, {self.piece_xy})"
 
 
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-GREEN = (0, 255, 0)
-YELLOW = (0, 255, 255)
-
-
 def create_players(number_of_players):
     list_of_players = []
     if number_of_players == 2:
-        blue_player = Player(BLUE, True, 8, 16)
+        blue_player = Player(Colors.BLUE, True, 8, 16)
         list_of_players.append(blue_player)
 
-        red_player = Player(RED, False, 8, 0)
+        red_player = Player(Colors.RED, False, 8, 0)
         list_of_players.append(red_player)
 
     elif number_of_players == 4:
-        blue_player = Player(BLUE, True, 8, 16)
+        blue_player = Player(f"Colors.BLUE", True, 8, 16)
         list_of_players.append(blue_player)
 
-        red_player = Player(RED, False, 8, 0)
+        red_player = Player(Colors.RED, False, 8, 0)
         list_of_players.append(red_player)
 
-        green_player = Player(GREEN, False, 0, 8)
+        green_player = Player(Colors.GREEN, False, 0, 8)
         list_of_players.append(green_player)
 
-        yellow_player = Player(YELLOW, False, 16, 0)
+        yellow_player = Player(Colors.YELLOW, False, 16, 0)
         list_of_players.append(yellow_player)
-    return list_of_players
+    return
 
 
 def get_current_player(players_list):
@@ -60,7 +56,3 @@ def change_turn():
             player_index = list_of_players.index(player)
             list_of_players[player_index + 1].is_their_turn = True
             return
-
-
-def draw_pieces(board, surface):
-    pass
