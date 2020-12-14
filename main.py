@@ -3,9 +3,9 @@ import Board
 import Colors
 
 
-def place_wall(player, board):
-
-    Player.change_turn()
+def do_turn(move_sting, player_to_move, board):
+    Player.add_pieces_to_tile_matrix(Player.list_of_players, board)
+    board.print_board()
     return
 
 
@@ -24,14 +24,12 @@ def move_piece(player, direction):
 
 if __name__ == "__main__":
 
-    
     # create the board
     board = Board.Board(9, 9)
 
     # create the players
-    number_of_players = 2  # TODO give player choice
+    number_of_players = 4  # TODO give player choice
     Player.create_players(number_of_players, board)
-    Player.add_pieces_to_board_matrix(Player.list_of_players)
-    board.print_board()
 
-    player_to_move = Player.get_current_player(Player.list_of_players)
+    # play the game
+    do_turn(None, None, board)

@@ -1,4 +1,6 @@
 import Colors
+import Board
+import math
 
 list_of_players = []
 
@@ -19,16 +21,16 @@ class Player:
 
     def generate_starting_position(self):
         if self.starting_edge == "south":
-            self.piece_coordinates["row"] = self.board.actual_rows - 1
-            self.piece_coordinates["col"] = self.board.actual_cols / 2
+            self.piece_coordinates["row"] = self.board.actual_rows - 2
+            self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
         elif self.starting_edge == "north":
             self.piece_coordinates["row"] = 1
-            self.piece_coordinates["col"] = self.board.actual_cols / 2
+            self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
         elif self.starting_edge == "east":
-            self.piece_coordinates["row"] = self.board.actual_rows / 2
-            self.piece_coordinates["col"] = self.board.actual_cols - 1
+            self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
+            self.piece_coordinates["col"] = self.board.actual_cols - 2
         elif self.starting_edge == "west":
-            self.piece_coordinates["row"] = self.board.actual_rows / 2
+            self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
             self.piece_coordinates["col"] = 1
         return
 
@@ -46,7 +48,7 @@ def create_players(number_of_players, board):
         list_of_players.append(red_player)
 
     elif number_of_players == 4:
-        blue_player = Player(f"Colors.BLUE", True, "south", board)
+        blue_player = Player(f"{Colors.BLUE}", True, "south", board)
         list_of_players.append(blue_player)
 
         red_player = Player(Colors.RED, False, "north", board)
@@ -60,13 +62,15 @@ def create_players(number_of_players, board):
     return
 
 
-def add_pieces_to_board_matrix(list_of_players):
+def add_pieces_to_tile_matrix(list_of_players, board):
     for player in list_of_players:
-        for row in player.board.board_matrix:
-            if row.index() == player.piece_coordinates["row"]:
+        for row in board.tile_matrix:
+            if board.tile_matrix.index(row) == player.piece_coordinates["row"]:
                 for tile in row:
-                    if tile.index() == player.piece_coordinates["col"]:
+                    if row.index(tile) == player.piece_coordinates["col"]:
                         tile.color = player.color
+    return
+
 
 def get_current_player(players_list):
     for player in players_list:

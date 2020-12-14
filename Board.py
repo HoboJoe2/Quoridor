@@ -10,6 +10,9 @@ class Board:
         self.tile_matrix = []
         self.create_starting_matrix()
 
+    def __repr__(self):
+        return f"Board({self.num_rows}, {self.num_cols})"
+
     def create_starting_matrix(self):
         for row in range(self.actual_rows):
             cur_row = []
@@ -25,9 +28,6 @@ class Board:
                 print(tile.color + tile.char, end="")
             print()
 
-    def __repr__(self):
-        return f"Board({self.num_rows}, {self.num_cols})"
-
 
 class Tile:
     def __init__(self, row, col, board):
@@ -37,6 +37,10 @@ class Tile:
         self.char = ""
         self.color = f"{Colors.LIGHT_PURPLE}"
         self.get_char_and_color()
+
+    def __repr__(self):
+        return f"""Tile({self.row}, {self.col},
+        {self.color}{self.char} {self.board})"""
 
     def get_char_and_color(self):
         if self.row % 2 != 0 and self.col % 2 != 0:  # big tile
