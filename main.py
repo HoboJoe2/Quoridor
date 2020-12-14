@@ -24,13 +24,14 @@ def move_piece(player, direction):
 
 if __name__ == "__main__":
 
-    # create the players
-    number_of_players = 2  # TODO give player choice
-    Player.create_players(number_of_players)
-
+    
     # create the board
     board = Board.Board(9, 9)
 
+    # create the players
+    number_of_players = 2  # TODO give player choice
+    Player.create_players(number_of_players, board)
+    Player.add_pieces_to_board_matrix(Player.list_of_players)
     board.print_board()
 
     player_to_move = Player.get_current_player(Player.list_of_players)
