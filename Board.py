@@ -44,7 +44,7 @@ class Tile:
 
     def get_char_and_color(self):
         if self.row % 2 != 0 and self.col % 2 != 0:  # big tile
-            self.char = "■"
+            self.char = "O"
             self.color = f"{Colors.BLACK}"
         else:
             self.color = f"{Colors.LIGHT_GRAY}"
@@ -52,13 +52,13 @@ class Tile:
                 if self.col == 0 or self.col == self.board.actual_cols - 1:
                     self.char = "+"
                 else:
-                    self.char = "-"
+                    self.char = "–"
             elif self.col == 0 or self.col == self.board.actual_cols - 1:
                 self.char = "|"
             elif self.row % 2 != 0:  # on a row with big tiles
                 self.char = "|"
             elif self.col % 2 != 0:  # on a col with big tiles
-                self.char = "-"
+                self.char = "–"
             elif self.row % 2 == 0 and self.col % 2 == 0:  # on an intersection
                 self.char = "+"
             return
