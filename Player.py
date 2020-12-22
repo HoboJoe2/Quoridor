@@ -10,13 +10,14 @@ list_of_players = []
 
 class Player:
 
-    def __init__(self, walls, color, goes_first, starting_edge, board):
+    def __init__(self, walls_left, color, goes_first, starting_edge, board):
         self.color = color
-        self.walls = walls
+        self.walls_left = walls_left
         self.is_their_turn = goes_first
         self.starting_edge = starting_edge
         self.board = board
         self.piece_coordinates = {"row": 0, "col": 0}
+        self.wall_list = []
         self.legal_moves = {"north": True,
                             "south": True,
                             "east": True,
@@ -69,8 +70,8 @@ def create_players(number_of_players, walls, board):
 
 def add_players_to_board(list_of_players, board):
     add_pieces_to_tile_matrix(list_of_players, board)
-    color_board_edges(list_of_players, board)
     add_walls_to_tile_matrix(list_of_players, board)
+    color_board_edges(list_of_players, board)
     return
 
 
@@ -80,8 +81,27 @@ def add_pieces_to_tile_matrix(list_of_players, board):
             if board.tile_matrix.index(row) == player.piece_coordinates["row"]:
                 for tile in row:
                     if row.index(tile) == player.piece_coordinates["col"]:
-                        tile.color = player.color
                         tile.player_on = player
+                        tile.color = player.color
+    return
+
+
+def add_walls_to_tile_matrix(list_of_players, board):
+    for player in list_of_players:
+        for wall in player.wall_list:
+            for row in board.tile_matrix:
+                if board.tile_matrix.index(row) == wall[0]:
+                    for tile in row:
+                        if row.index(tile) == wall[1]:
+                            tile.player_on = player
+                            tile.color = player.color
+    return
+
+
+def create_wall(player, coordinates):
+    wall_row = int(coordinates[0]) - 1  # to match list index
+    wall_col = int(coordinates[1]) - 1
+    player.wall_list.append([wall_row, wall_col])
     return
 
 
@@ -103,15 +123,6 @@ def color_board_edges(list_of_players, board):
                 for tile in row:
                     if row.index(tile) == len(row) - 1:
                         tile.color = player.color
-    return
-
-
-def add_walls_to_tile_matrix(list_of_players, board):
-    for player in list_of_players:
-        for row in board.tile_matrix:
-            for tile in row:
-                if tile.wall_on == player:
-                    tile.color = player.color
     return
 
 
@@ -145,15 +156,4 @@ def move_piece(player, direction):
 
     change_turn()
 
-    return
-
-
-def place_wall(player, coordinates, board):
-    wall_row = int(coordinates[0]) - 1  # to match list index
-    wall_col = int(coordinates[1]) - 1
-    for row in board.tile_matrix:
-        if wall_row == board.tile_matrix.index(row):
-            for tile in row:
-                if wall_col == row.index(tile):
-                    tile.wall_on = player
     return

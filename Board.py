@@ -32,7 +32,6 @@ class Tile:
         self.col = col
         self.board = board
         self.player_on = None
-        self.wall_on = None
         self.char = ""
         self.color = f"{Fore.MAGENTA}"
         self.get_char_and_color()
@@ -70,6 +69,6 @@ def print_board(board, list_of_players):
         print()
     print()
     for player in list_of_players:
-        print(f"{player.color}Walls left: {player.walls}")
+        print(f"{player.color}Walls left: {player.walls_left}")
     print()
     return

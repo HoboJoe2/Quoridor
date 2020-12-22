@@ -51,7 +51,7 @@ def do_move(move_string, player_list, board):
     if move_string[0:2] == "m_":
         Player.move_piece(player_to_move, move_string[2:])
     elif move_string[0:2] == "w_":
-        Player.place_wall(player_to_move, move_string[2:], board)
+        Player.create_wall(player_to_move, move_string[2:])
     elif move_string == "pass":
         pass
     else:
