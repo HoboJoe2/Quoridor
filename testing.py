@@ -1,6 +1,9 @@
-import Colors
+import colorama
+from colorama import Fore, Back, Style
 
-print(f"{Colors.RED}hi")
-print(f"hi")
+colorama.init(autoreset=True)
+
+print(f"{Fore.RED}hi")
+print("hi")
 
 square = "■"

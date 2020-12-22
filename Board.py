@@ -1,4 +1,7 @@
-import Colors
+import colorama
+from colorama import Fore, Back, Style
+
+colorama.init(autoreset=True)
 
 
 class Board:
@@ -22,20 +25,16 @@ class Board:
             self.tile_matrix.append(cur_row)
         return
 
-    def print_board(self):
-        for row in self.tile_matrix:
-            for tile in row:
-                print(tile.color + tile.char, end="")
-            print()
-
 
 class Tile:
     def __init__(self, row, col, board):
         self.row = row
         self.col = col
         self.board = board
+        self.player_on = None
+        self.wall_on = None
         self.char = ""
-        self.color = f"{Colors.LIGHT_PURPLE}"
+        self.color = f"{Fore.MAGENTA}"
         self.get_char_and_color()
 
     def __repr__(self):
@@ -45,9 +44,9 @@ class Tile:
     def get_char_and_color(self):
         if self.row % 2 != 0 and self.col % 2 != 0:  # big tile
             self.char = "O"
-            self.color = f"{Colors.BLACK}"
+            self.color = f"{Fore.BLACK}"
         else:
-            self.color = f"{Colors.LIGHT_GRAY}"
+            self.color = f"{Fore.WHITE}"
             if self.row == 0 or self.row == self.board.actual_rows - 1:
                 if self.col == 0 or self.col == self.board.actual_cols - 1:
                     self.char = "+"
@@ -62,3 +61,15 @@ class Tile:
             elif self.row % 2 == 0 and self.col % 2 == 0:  # on an intersection
                 self.char = "+"
             return
+
+
+def print_board(board, list_of_players):
+    for row in board.tile_matrix:
+        for tile in row:
+            print(tile.color + tile.char, end="")
+        print()
+    print()
+    for player in list_of_players:
+        print(f"{player.color}Walls left: {player.walls}")
+    print()
+    return
