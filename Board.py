@@ -71,9 +71,31 @@ def print_board(board, list_of_players):
     for row in board.tile_matrix:
         row_indicator_length = len(str(board.tile_matrix.index(row)))
 
+    col_indicators = []
+    for empty_col in range(row_indicator_length + 1):
+        col_indicators.append(" ")
+
+    col_number = 0
+    for col in range(len(board.tile_matrix[0])):
+        if col % 2 != 0:
+            col_number += 1
+            col_indicators.append(col_number)
+        else:
+            col_indicators.append(" ")
+
+    for char in col_indicators:
+        print(f"{Fore.LIGHTBLACK_EX}{char}", end="")
+
+    print()
+
+    row_indicator_number = 0
     for row in board.tile_matrix:
-        row_indicator = str(board.tile_matrix.index(row)) + (" " * (row_indicator_length - len(str(board.tile_matrix.index(row)))))
-        print(f"{Fore.LIGHTBLACK_EX}{row_indicator}  ", end="")
+        if board.tile_matrix.index(row) % 2 != 0:
+            row_indicator_number += 1
+            row_indicator = str(row_indicator_number) + (" " * (row_indicator_length - len(str(row_indicator_number))))
+        else:
+            row_indicator = " " * row_indicator_length
+        print(f"{Fore.LIGHTBLACK_EX}{row_indicator} ", end="")
         for tile in row:
             print(tile.color + tile.char, end="")
         print()

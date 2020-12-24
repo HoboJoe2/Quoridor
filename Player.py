@@ -118,17 +118,24 @@ def move_piece(player, direction, list_of_players):
 def create_wall(player, move_string, list_of_players):
     coordinates = move_string[2:]
 
-    wall_row = int(coordinates.split("_")[0])
-    wall_col = int(coordinates.split("_")[1])
+    if move_string[0:2] == "h_":
+        wall_row = (int(coordinates.split("_")[0]) * 2) - 2
+        wall_col = (int(coordinates.split("_")[1]) * 2) - 1
 
-    for num in [0, 1, 2]:
-        if move_string[0:2] == "h_":
+        for num in [0, 1, 2]:
             player.wall_list.append([wall_row, wall_col + num])
-        elif move_string[0:2] == "v_":
-            player.wall_list.append([wall_row + num, wall_col])
-        else:
-            return False
 
+    elif move_string[0:2] == "v_":
+        wall_row = (int(coordinates.split("_")[0]) * 2) - 1
+        wall_col = (int(coordinates.split("_")[1]) * 2) - 2
+
+        for num in [0, 1, 2]:
+            player.wall_list.append([wall_row + num, wall_col])
+
+    else:
+        return False
+
+    player.walls_left -= 1
     change_turn(list_of_players)
 
     return True
