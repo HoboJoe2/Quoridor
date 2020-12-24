@@ -1,6 +1,12 @@
 import Player
 import Board
 import Text
+import os
+import colorama
+from colorama import Fore, Back, Style
+import time
+
+colorama.init(autoreset=True)
 
 
 def process_user_input(user_input):
@@ -44,18 +50,18 @@ def get_game_settings(quick_start):
 
 
 def do_move(move_string, player_list, board):
-    player_to_move = None
-    for player in player_list:
-        if player.is_their_turn:
-            player_to_move = player
+    player_to_move = Player.get_current_player(player_list)
     if move_string[0:2] == "m_":
-        Player.move_piece(player_to_move, move_string[2:])
-    elif move_string[0:2] == "w_":
-        Player.create_wall(player_to_move, move_string[2:])
+        valid_move = Player.move_piece(player_to_move, move_string[2:], player_list)
+        if not valid_move:
+            return False
+    elif move_string[0:4] == "w_v_" or move_string[0:4] == "w_h_":
+        valid_move = Player.create_wall(player_to_move, move_string[2:], player_list)
+        if not valid_move:
+            return False
     elif move_string == "pass":
         pass
     else:
-        print("Invalid move, type help to see how to input moves.")
         return False
     return True
 
@@ -64,10 +70,9 @@ def game_loop(player_list, board, game_settings):
     valid_move = True  # so that board prints on the first turn
     while True:
         # print/update board if last move was valid
-        if valid_move:
-            board = Board.Board(game_settings["rows"], game_settings["cols"])
-            Player.add_players_to_board(player_list, board)
-            Board.print_board(board, player_list)
+        board = Board.Board(game_settings["rows"], game_settings["cols"])
+        Player.add_players_to_board(player_list, board)
+        Board.print_board(board, player_list)
 
         # play
         move_string = input("Type a move > ")
@@ -75,6 +80,9 @@ def game_loop(player_list, board, game_settings):
             break
         else:
             valid_move = do_move(move_string, player_list, board)
+            os.system("cls")
+            if not valid_move:
+                print(f"{Fore.RED}Invalid move, type help to see how to input moves")
     return
 
 
@@ -95,3 +103,4 @@ if __name__ == "__main__":
     # play the game
     game_loop(Player.list_of_players, board, game_settings)
     print("Thank you for playing.")
+    time.sleep(1000)

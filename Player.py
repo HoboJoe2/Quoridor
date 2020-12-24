@@ -98,11 +98,40 @@ def add_walls_to_tile_matrix(list_of_players, board):
     return
 
 
-def create_wall(player, coordinates):
-    wall_row = int(coordinates[0]) - 1  # to match list index
-    wall_col = int(coordinates[1]) - 1
-    player.wall_list.append([wall_row, wall_col])
-    return
+def move_piece(player, direction, list_of_players):
+    if direction == "n" and player.legal_moves["north"] is True:
+        player.piece_coordinates["row"] -= 2
+    elif direction == "s" and player.legal_moves["south"] is True:
+        player.piece_coordinates["row"] += 2
+    elif direction == "e" and player.legal_moves["east"] is True:
+        player.piece_coordinates["col"] += 2
+    elif direction == "w" and player.legal_moves["west"] is True:
+        player.piece_coordinates["col"] -= 2
+    else:
+        return False
+
+    change_turn(list_of_players)
+
+    return True
+
+
+def create_wall(player, move_string, list_of_players):
+    coordinates = move_string[2:]
+
+    wall_row = int(coordinates.split("_")[0])
+    wall_col = int(coordinates.split("_")[1])
+
+    for num in [0, 1, 2]:
+        if move_string[0:2] == "h_":
+            player.wall_list.append([wall_row, wall_col + num])
+        elif move_string[0:2] == "v_":
+            player.wall_list.append([wall_row + num, wall_col])
+        else:
+            return False
+
+    change_turn(list_of_players)
+
+    return True
 
 
 def color_board_edges(list_of_players, board):
@@ -132,7 +161,7 @@ def get_current_player(players_list):
             return player
 
 
-def change_turn():
+def change_turn(list_of_players):
     for player in list_of_players:
         if player.is_their_turn:
             player.is_their_turn = False
@@ -142,18 +171,3 @@ def change_turn():
             else:
                 list_of_players[0].is_their_turn = True
             return
-
-
-def move_piece(player, direction):
-    if direction == "north" and player.legal_moves["north"] is True:
-        player.piece_coordinates["row"] -= 2
-    elif direction == "south" and player.legal_moves["south"] is True:
-        player.piece_coordinates["row"] += 2
-    elif direction == "east" and player.legal_moves["east"] is True:
-        player.piece_coordinates["col"] += 2
-    elif direction == "west" and player.legal_moves["west"] is True:
-        player.piece_coordinates["col"] -= 2
-
-    change_turn()
-
-    return

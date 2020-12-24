@@ -31,6 +31,7 @@ class Tile:
         self.row = row
         self.col = col
         self.board = board
+        self.big_tile = False  # tile that players can move to
         self.player_on = None
         self.char = ""
         self.color = f"{Fore.MAGENTA}"
@@ -44,6 +45,7 @@ class Tile:
         if self.row % 2 != 0 and self.col % 2 != 0:  # big tile
             self.char = "O"
             self.color = f"{Fore.BLACK}"
+            self.big_tile = True
         else:
             self.color = f"{Fore.WHITE}"
             if self.row == 0 or self.row == self.board.actual_rows - 1:
@@ -63,12 +65,24 @@ class Tile:
 
 
 def print_board(board, list_of_players):
+    print()
+
+    row_indicator_length = 0
     for row in board.tile_matrix:
+        row_indicator_length = len(str(board.tile_matrix.index(row)))
+
+    for row in board.tile_matrix:
+        row_indicator = str(board.tile_matrix.index(row)) + (" " * (row_indicator_length - len(str(board.tile_matrix.index(row)))))
+        print(f"{Fore.LIGHTBLACK_EX}{row_indicator}  ", end="")
         for tile in row:
             print(tile.color + tile.char, end="")
         print()
+
     print()
+
     for player in list_of_players:
         print(f"{player.color}Walls left: {player.walls_left}")
+
     print()
+
     return
