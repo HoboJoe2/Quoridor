@@ -69,6 +69,7 @@ def create_players(number_of_players, walls, board):
 
 
 def add_players_to_board(list_of_players, board):
+
     add_pieces_to_tile_matrix(list_of_players, board)
     add_walls_to_tile_matrix(list_of_players, board)
     color_board_edges(list_of_players, board)
@@ -115,24 +116,32 @@ def move_piece(player, direction, list_of_players):
     return True
 
 
-def create_wall(player, move_string, list_of_players):
+def create_wall(player, move_string, list_of_players, board):
     coordinates = move_string[2:]
 
     if player.walls_left == 0:
         return False
-    else:
-        pass
 
-    if move_string[0:2] == "h_":
+    elif move_string[0:2] == "h_":
+
         wall_row = (int(coordinates.split("_")[0]) * 2) - 2
         wall_col = (int(coordinates.split("_")[1]) * 2) - 1
 
         for num in [0, 1, 2]:
+            if board.tile_matrix[wall_row][wall_col + num].player_on is not None:
+                return False
+        
+        for num in [0, 1, 2]:
             player.wall_list.append([wall_row, wall_col + num])
 
     elif move_string[0:2] == "v_":
+
         wall_row = (int(coordinates.split("_")[0]) * 2) - 1
         wall_col = (int(coordinates.split("_")[1]) * 2) - 2
+
+        for num in [0, 1, 2]:
+            if board.tile_matrix[wall_row + num][wall_col].player_on is not None:
+                return False
 
         for num in [0, 1, 2]:
             player.wall_list.append([wall_row + num, wall_col])

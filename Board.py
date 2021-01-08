@@ -31,17 +31,27 @@ class Tile:
         self.row = row
         self.col = col
         self.board = board
+        self.v_wall_is_valid = True
+        self.h_wall_is_valid = True
         self.big_tile = False  # tile that players can move to
         self.player_on = None
         self.char = ""
         self.color = f"{Fore.MAGENTA}"
-        self.get_char_and_color()
+        self.set_initial_attributes()
 
     def __repr__(self):
         return f"""Tile({self.row}, {self.col},
         {self.color}{self.char} {self.board})"""
 
-    def get_char_and_color(self):
+    def set_initial_attributes(self):
+
+        # idk why -2 not -1, maybe something to do with list index
+        if self.row == self.board.actual_rows - 2:
+            self.v_wall_is_valid = False
+
+        if self.col == self.board.actual_cols - 2:
+            self.h_wall_is_valid = False
+
         if self.row % 2 != 0 and self.col % 2 != 0:  # big tile
             self.char = "O"
             self.color = f"{Fore.BLACK}"
@@ -61,7 +71,7 @@ class Tile:
                 self.char = "–"
             elif self.row % 2 == 0 and self.col % 2 == 0:  # on an intersection
                 self.char = "+"
-            return
+        return
 
 
 def print_board(board, list_of_players):

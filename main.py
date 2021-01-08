@@ -45,7 +45,7 @@ def get_game_settings(quick_start):
         game_settings["rows"] = int(input("How many rows should the board have (odd number)? > "))
         game_settings["cols"] = int(input("How many columns should the board have (odd number)? > "))
         game_settings["players"] = int(input("How many players should the game have (2 or 4)? > "))
-        game_settings["walls"] = int(input("How many walls should each player have? > "))
+        game_settings["walls"] =    int(input("How many walls should each player have? > "))
     return game_settings
 
 
@@ -56,7 +56,7 @@ def do_move(move_string, player_list, board):
         if not valid_move:
             return False
     elif move_string[0:4] == "w_v_" or move_string[0:4] == "w_h_":
-        valid_move = Player.create_wall(player_to_move, move_string[2:], player_list)
+        valid_move = Player.create_wall(player_to_move, move_string[2:], player_list, board)
         if not valid_move:
             return False
     elif move_string == "pass":
@@ -80,7 +80,7 @@ def game_loop(player_list, board, game_settings):
             break
         else:
             valid_move = do_move(move_string, player_list, board)
-            os.system("cls")
+            #  os.system("cls")
             if not valid_move:
                 print(f"{Fore.RED}Invalid move, type help to see how to input moves")
     return
@@ -103,4 +103,4 @@ if __name__ == "__main__":
     # play the game
     game_loop(Player.list_of_players, board, game_settings)
     print("Thank you for playing.")
-    time.sleep(1000)
+    time.sleep(1)
