@@ -45,7 +45,7 @@ def get_game_settings(quick_start):
         game_settings["rows"] = int(input("How many rows should the board have (odd number)? > "))
         game_settings["cols"] = int(input("How many columns should the board have (odd number)? > "))
         game_settings["players"] = int(input("How many players should the game have (2 or 4)? > "))
-        game_settings["walls"] =    int(input("How many walls should each player have? > "))
+        game_settings["walls"] = int(input("How many walls should each player have? > "))
     return game_settings
 
 

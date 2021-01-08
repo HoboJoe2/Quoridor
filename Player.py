@@ -130,7 +130,7 @@ def create_wall(player, move_string, list_of_players, board):
         for num in [0, 1, 2]:
             if board.tile_matrix[wall_row][wall_col + num].player_on is not None:
                 return False
-        
+    
         for num in [0, 1, 2]:
             player.wall_list.append([wall_row, wall_col + num])
 
