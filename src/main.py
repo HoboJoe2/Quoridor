@@ -106,4 +106,4 @@ if __name__ == "__main__":
     # play the game
     game_loop(Player.list_of_players, board, game_settings)
     print("Thank you for playing!")
-    time.sleep(1)
+    time.sleep(2)
