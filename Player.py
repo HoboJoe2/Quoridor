@@ -15,34 +15,25 @@ class Player:
         self.walls_left = walls_left
         self.is_their_turn = goes_first
         self.starting_edge = starting_edge
-        self.winning_edge = ""
         self.board = board
         self.piece_coordinates = {"row": 0, "col": 0}
         self.wall_list = []
-        self.legal_moves = {"north": True,
-                            "south": True,
-                            "east": True,
-                            "west": True}
-        self.generate_starting_and_winning_edge()
+        self.generate_starting_edge()
         list_of_players.append(self)
 
-    def generate_starting_and_winning_edge(self):
+    def generate_starting_edge(self):
         if self.starting_edge == "south":
             self.piece_coordinates["row"] = self.board.actual_rows - 2
             self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
-            self.winning_edge = "north"
         elif self.starting_edge == "north":
             self.piece_coordinates["row"] = 1
             self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
-            self.starting_edge = "south"
         elif self.starting_edge == "east":
             self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
             self.piece_coordinates["col"] = self.board.actual_cols - 2
-            self.winning_edge = "west"
         elif self.starting_edge == "west":
             self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
             self.piece_coordinates["col"] = 1
-            self.winning_edge = "east"
         return
 
     def __repr__(self):
@@ -121,7 +112,8 @@ def move_piece(player, direction, list_of_players, board):
             return False
         else:
             player.piece_coordinates["row"] -= 1
-    elif direction == "s" and player.legal_moves["south"] is True:
+
+    elif direction == "s":
         player.piece_coordinates["row"] += 1
         wall_on_tile = check_for_wall_on_tile(player, board)
         if wall_on_tile:
@@ -129,7 +121,8 @@ def move_piece(player, direction, list_of_players, board):
             return False
         else:
             player.piece_coordinates["row"] += 1
-    elif direction == "e" and player.legal_moves["east"] is True:
+
+    elif direction == "e":
         player.piece_coordinates["col"] += 1
         wall_on_tile = check_for_wall_on_tile(player, board)
         if wall_on_tile:
@@ -137,7 +130,8 @@ def move_piece(player, direction, list_of_players, board):
             return False
         else:
             player.piece_coordinates["col"] += 1
-    elif direction == "w" and player.legal_moves["west"] is True:
+
+    elif direction == "w":
         player.piece_coordinates["col"] -= 1
         wall_on_tile = check_for_wall_on_tile(player, board)
         if wall_on_tile:
@@ -145,6 +139,7 @@ def move_piece(player, direction, list_of_players, board):
             return False
         else:
             player.piece_coordinates["col"] -= 1
+
     else:
         return False
 
@@ -167,7 +162,7 @@ def create_wall(player, move_string, list_of_players, board):
         for num in [0, 1, 2]:
             if board.tile_matrix[wall_row][wall_col + num].player_on is not None:
                 return False
-    
+
         for num in [0, 1, 2]:
             player.wall_list.append([wall_row, wall_col + num])
 

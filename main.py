@@ -78,6 +78,9 @@ def game_loop(player_list, board, game_settings):
         move_string = input("Type a move > ")
         if move_string == "exit":
             break
+        elif move_string == "help":
+            # in this function so it doesnt say invalid move
+            print(Text.move_help)
         else:
             valid_move = do_move(move_string, player_list, board)
             #  os.system("cls")
@@ -102,5 +105,5 @@ if __name__ == "__main__":
 
     # play the game
     game_loop(Player.list_of_players, board, game_settings)
-    print("Thank you for playing.")
+    print("Thank you for playing!")
     time.sleep(1)
