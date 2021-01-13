@@ -15,6 +15,7 @@ class Player:
         self.walls_left = walls_left
         self.is_their_turn = goes_first
         self.starting_edge = starting_edge
+        self.winning_edge = ""
         self.board = board
         self.piece_coordinates = {"row": 0, "col": 0}
         self.wall_list = []
@@ -22,22 +23,26 @@ class Player:
                             "south": True,
                             "east": True,
                             "west": True}
-        self.generate_starting_position()
+        self.generate_starting_and_winning_edge()
         list_of_players.append(self)
 
-    def generate_starting_position(self):
+    def generate_starting_and_winning_edge(self):
         if self.starting_edge == "south":
             self.piece_coordinates["row"] = self.board.actual_rows - 2
             self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
+            self.winning_edge = "north"
         elif self.starting_edge == "north":
             self.piece_coordinates["row"] = 1
             self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
+            self.starting_edge = "south"
         elif self.starting_edge == "east":
             self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
             self.piece_coordinates["col"] = self.board.actual_cols - 2
+            self.winning_edge = "west"
         elif self.starting_edge == "west":
             self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
             self.piece_coordinates["col"] = 1
+            self.winning_edge = "east"
         return
 
     def __repr__(self):
@@ -73,6 +78,7 @@ def add_players_to_board(list_of_players, board):
     add_pieces_to_tile_matrix(list_of_players, board)
     add_walls_to_tile_matrix(list_of_players, board)
     color_board_edges(list_of_players, board)
+
     return
 
 
@@ -99,15 +105,46 @@ def add_walls_to_tile_matrix(list_of_players, board):
     return
 
 
-def move_piece(player, direction, list_of_players):
-    if direction == "n" and player.legal_moves["north"] is True:
-        player.piece_coordinates["row"] -= 2
+def check_for_wall_on_tile(player, board):
+    tile = board.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
+    if tile.player_on is not None:
+        return True
+    return False
+
+
+def move_piece(player, direction, list_of_players, board):
+    if direction == "n":
+        player.piece_coordinates["row"] -= 1
+        wall_on_tile = check_for_wall_on_tile(player, board)
+        if wall_on_tile:
+            player.piece_coordinates["row"] += 1
+            return False
+        else:
+            player.piece_coordinates["row"] -= 1
     elif direction == "s" and player.legal_moves["south"] is True:
-        player.piece_coordinates["row"] += 2
+        player.piece_coordinates["row"] += 1
+        wall_on_tile = check_for_wall_on_tile(player, board)
+        if wall_on_tile:
+            player.piece_coordinates["row"] -= 1
+            return False
+        else:
+            player.piece_coordinates["row"] += 1
     elif direction == "e" and player.legal_moves["east"] is True:
-        player.piece_coordinates["col"] += 2
+        player.piece_coordinates["col"] += 1
+        wall_on_tile = check_for_wall_on_tile(player, board)
+        if wall_on_tile:
+            player.piece_coordinates["col"] -= 1
+            return False
+        else:
+            player.piece_coordinates["col"] += 1
     elif direction == "w" and player.legal_moves["west"] is True:
-        player.piece_coordinates["col"] -= 2
+        player.piece_coordinates["col"] -= 1
+        wall_on_tile = check_for_wall_on_tile(player, board)
+        if wall_on_tile:
+            player.piece_coordinates["col"] += 1
+            return False
+        else:
+            player.piece_coordinates["col"] -= 1
     else:
         return False
 

@@ -52,7 +52,7 @@ def get_game_settings(quick_start):
 def do_move(move_string, player_list, board):
     player_to_move = Player.get_current_player(player_list)
     if move_string[0:2] == "m_":
-        valid_move = Player.move_piece(player_to_move, move_string[2:], player_list)
+        valid_move = Player.move_piece(player_to_move, move_string[2:], player_list, board)
         if not valid_move:
             return False
     elif move_string[0:4] == "w_v_" or move_string[0:4] == "w_h_":

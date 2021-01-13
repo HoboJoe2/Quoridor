@@ -33,7 +33,6 @@ class Tile:
         self.board = board
         self.v_wall_is_valid = True
         self.h_wall_is_valid = True
-        self.big_tile = False  # tile that players can move to
         self.player_on = None
         self.char = ""
         self.color = f"{Fore.MAGENTA}"
@@ -55,7 +54,6 @@ class Tile:
         if self.row % 2 != 0 and self.col % 2 != 0:  # big tile
             self.char = "O"
             self.color = f"{Fore.BLACK}"
-            self.big_tile = True
         else:
             self.color = f"{Fore.WHITE}"
             if self.row == 0 or self.row == self.board.actual_rows - 1:
