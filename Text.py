@@ -4,6 +4,10 @@ from colorama import Fore, Back, Style
 
 welcome = """
 Welcome to Quoridor, type help to see a list of commands.
+
+Note that this program isn't finished, if one player lands on another player's
+piece everyone should type "pass" until it's the players turn again. Also,
+once someone wins type "exit" to exit the program.
 """
 
 help = """
@@ -29,7 +33,8 @@ Input placing a wall like this:
 w_h_2_3 -> Horizontal wall at row 2, column 3
 w_v_8_5 -> Vertical wall at row 8, column 5
 
-Walls will be placed from the top left point of the coordinate you specify, going south or east.
+Walls will be placed from the top left point of the coordinate you
+specify, going south or east.
 For example, if blue played w_h_1_1 and red played w_v_1_1 the result would be:
 
       {Fore.LIGHTBLACK_EX}1 2{Fore.RESET}
