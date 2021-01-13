@@ -10,9 +10,10 @@ list_of_players = []
 
 class Player:
 
-    def __init__(self, walls_left, color, goes_first, starting_edge, board):
-        self.color = color
+    def __init__(self, name, walls_left, color, goes_first, starting_edge, board):
+        self.name = name
         self.walls_left = walls_left
+        self.color = color
         self.is_their_turn = goes_first
         self.starting_edge = starting_edge
         self.board = board
@@ -43,23 +44,23 @@ class Player:
 def create_players(number_of_players, walls, board):
     list_of_players = []
     if number_of_players == 2:
-        blue_player = Player(walls, Fore.BLUE, True, "south", board)
+        blue_player = Player("Blue", walls, Fore.BLUE, True, "south", board)
         list_of_players.append(blue_player)
 
-        red_player = Player(walls, Fore.RED, False, "north", board)
+        red_player = Player("Red", walls, Fore.RED, False, "north", board)
         list_of_players.append(red_player)
 
     elif number_of_players == 4:
-        blue_player = Player(walls, Fore.BLUE, True, "south", board)
+        blue_player = Player("Blue", walls, Fore.BLUE, True, "south", board)
         list_of_players.append(blue_player)
 
-        red_player = Player(walls, Fore.RED, False, "north", board)
+        red_player = Player("Blue", walls, Fore.RED, False, "north", board)
         list_of_players.append(red_player)
 
-        green_player = Player(walls, Fore.GREEN, False, "east", board)
+        green_player = Player("Blue", walls, Fore.GREEN, False, "east", board)
         list_of_players.append(green_player)
 
-        yellow_player = Player(walls, Fore.YELLOW, False, "west", board)
+        yellow_player = Player("Blue", walls, Fore.YELLOW, False, "west", board)
         list_of_players.append(yellow_player)
     return
 

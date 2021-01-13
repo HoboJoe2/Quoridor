@@ -114,5 +114,9 @@ def print_board(board, list_of_players):
         print(f"{player.color}Walls left: {player.walls_left}")
 
     print()
+    for player in list_of_players:
+        if player.is_their_turn:
+            print(f"{player.color}{player.name} to move...")
+    print()
 
     return
