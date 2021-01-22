@@ -51,6 +51,9 @@ def get_game_settings(quick_start):
 
 def do_move(move_string, player_list, board):
     player_to_move = Player.get_current_player(player_list)
+
+    board.move_list.append((player_to_move, move_string))
+
     if move_string[0:2] == "m_":
         valid_move = Player.move_piece(player_to_move, move_string[2:], player_list, board)
         if not valid_move:
@@ -66,11 +69,10 @@ def do_move(move_string, player_list, board):
     return True
 
 
-def game_loop(player_list, board, game_settings):
+def game_loop(player_list, board):
     valid_move = True  # so that board prints on the first turn
     while True:
         # print/update board if last move was valid
-        board = Board.Board(game_settings["rows"], game_settings["cols"])
         Player.add_players_to_board(player_list, board)
         Board.print_board(board, player_list)
 
@@ -104,6 +106,6 @@ if __name__ == "__main__":
                           game_settings["walls"], board)
 
     # play the game
-    game_loop(Player.list_of_players, board, game_settings)
+    game_loop(Player.list_of_players, board)
     print("Thank you for playing!")
     time.sleep(2)

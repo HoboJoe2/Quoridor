@@ -11,6 +11,7 @@ class Board:
         self.actual_rows = ((self.num_rows * 2) + 1)
         self.actual_cols = ((self.num_cols * 2) + 1)
         self.tile_matrix = []
+        self.move_list = []
         self.create_starting_matrix()
 
     def __repr__(self):

@@ -105,6 +105,11 @@ def check_for_wall_on_tile(player, board):
 
 
 def move_piece(player, direction, list_of_players, board):
+
+    current_tile = board.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
+    current_tile.player_on = None
+    current_tile.color = Fore.BLACK
+
     if direction == "n":
         player.piece_coordinates["row"] -= 1
         wall_on_tile = check_for_wall_on_tile(player, board)

@@ -1,1 +1,0 @@
-python -m venv .env && cd .env/Scripts && activate && cd.. && cd.. && pip install -r requirements.txt && cd src && python main.py

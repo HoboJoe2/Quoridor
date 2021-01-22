@@ -6,8 +6,8 @@ welcome = """
 Welcome to Quoridor, type help to see a list of commands.
 
 Note that this program isn't finished, if one player lands on another player's
-piece everyone should type "pass" until it's the players turn again. Also,
-once someone wins type "exit" to exit the program.
+piece everyone should type "pass" until it's the players turn again. Also, if 
+someone wins type "exit" to exit the program.
 """
 
 help = """
