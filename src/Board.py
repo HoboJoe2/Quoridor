@@ -1,17 +1,20 @@
 import colorama
+import Player
 from colorama import Fore, Back, Style
 
 colorama.init(autoreset=True)
 
 
 class Board:
-    def __init__(self, num_rows, num_cols):
+    def __init__(self, num_rows, num_cols, num_players, player_wall_count):
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.actual_rows = ((self.num_rows * 2) + 1)
         self.actual_cols = ((self.num_cols * 2) + 1)
         self.tile_matrix = []
         self.move_list = []
+        self.player_list = []
+        self.create_players(num_players, player_wall_count)
         self.create_starting_matrix()
 
     def __repr__(self):
@@ -24,6 +27,28 @@ class Board:
                 cur_tile = Tile(row, col, self)
                 cur_row.append(cur_tile)
             self.tile_matrix.append(cur_row)
+        return
+
+    def create_players(self, num_players, player_wall_count):
+        if num_players == 2:
+            blue_player = Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
+            self.player_list.append(blue_player)
+
+            red_player = Player.Player("Red", player_wall_count, Fore.RED, False, "north", self)
+            self.player_list.append(red_player)
+
+        elif num_players == 4:
+            blue_player = Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
+            self.player_list.append(blue_player)
+
+            red_player = Player.Player("Blue", player_wall_count, Fore.RED, False, "north", self)
+            self.player_list.append(red_player)
+
+            green_player = Player.Player("Blue", player_wall_count, Fore.GREEN, False, "east", self)
+            self.player_list.append(green_player)
+
+            yellow_player = Player.Player("Blue", player_wall_count, Fore.YELLOW, False, "west", self)
+            self.player_list.append(yellow_player)
         return
 
 
@@ -73,7 +98,7 @@ class Tile:
         return
 
 
-def print_board(board, list_of_players):
+def print_board(board):
     print()
 
     row_indicator_length = 0
@@ -111,11 +136,11 @@ def print_board(board, list_of_players):
 
     print()
 
-    for player in list_of_players:
+    for player in board.player_list:
         print(f"{player.color}Walls left: {player.walls_left}")
 
     print()
-    for player in list_of_players:
+    for player in board.player_list:
         if player.is_their_turn:
             print(f"{player.color}{player.name} to move...")
     print()

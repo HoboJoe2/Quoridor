@@ -5,8 +5,6 @@ import math
 
 colorama.init(autoreset=True)
 
-list_of_players = []
-
 
 class Player:
 
@@ -19,10 +17,10 @@ class Player:
         self.board = board
         self.piece_coordinates = {"row": 0, "col": 0}
         self.wall_list = []
-        self.generate_starting_edge()
-        list_of_players.append(self)
+        self.generate_starting_coordinates()
+        board.player_list.append(self)
 
-    def generate_starting_edge(self):
+    def generate_starting_coordinates(self):
         if self.starting_edge == "south":
             self.piece_coordinates["row"] = self.board.actual_rows - 2
             self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
@@ -41,41 +39,17 @@ class Player:
         return f"Player({self.color}, {self.is_their_turn}, {self.piece_coordinates})"
 
 
-def create_players(number_of_players, walls, board):
-    list_of_players = []
-    if number_of_players == 2:
-        blue_player = Player("Blue", walls, Fore.BLUE, True, "south", board)
-        list_of_players.append(blue_player)
+def add_players_to_board(board):
 
-        red_player = Player("Red", walls, Fore.RED, False, "north", board)
-        list_of_players.append(red_player)
-
-    elif number_of_players == 4:
-        blue_player = Player("Blue", walls, Fore.BLUE, True, "south", board)
-        list_of_players.append(blue_player)
-
-        red_player = Player("Blue", walls, Fore.RED, False, "north", board)
-        list_of_players.append(red_player)
-
-        green_player = Player("Blue", walls, Fore.GREEN, False, "east", board)
-        list_of_players.append(green_player)
-
-        yellow_player = Player("Blue", walls, Fore.YELLOW, False, "west", board)
-        list_of_players.append(yellow_player)
-    return
-
-
-def add_players_to_board(list_of_players, board):
-
-    add_pieces_to_tile_matrix(list_of_players, board)
-    add_walls_to_tile_matrix(list_of_players, board)
-    color_board_edges(list_of_players, board)
+    add_pieces_to_tile_matrix(board)
+    add_walls_to_tile_matrix(board)
+    color_board_edges(board)
 
     return
 
 
-def add_pieces_to_tile_matrix(list_of_players, board):
-    for player in list_of_players:
+def add_pieces_to_tile_matrix(board):
+    for player in board.player_list:
         for row in board.tile_matrix:
             if board.tile_matrix.index(row) == player.piece_coordinates["row"]:
                 for tile in row:
@@ -85,8 +59,8 @@ def add_pieces_to_tile_matrix(list_of_players, board):
     return
 
 
-def add_walls_to_tile_matrix(list_of_players, board):
-    for player in list_of_players:
+def add_walls_to_tile_matrix(board):
+    for player in board.player_list:
         for wall in player.wall_list:
             for row in board.tile_matrix:
                 if board.tile_matrix.index(row) == wall[0]:
@@ -104,7 +78,7 @@ def check_for_wall_on_tile(player, board):
     return False
 
 
-def move_piece(player, direction, list_of_players, board):
+def move_piece(player, direction, board):
 
     current_tile = board.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
     current_tile.player_on = None
@@ -149,12 +123,10 @@ def move_piece(player, direction, list_of_players, board):
     else:
         return False
 
-    change_turn(list_of_players)
-
     return True
 
 
-def create_wall(player, move_string, list_of_players, board):
+def create_wall(player, move_string, board):
     coordinates = move_string[2:]
 
     if player.walls_left == 0:
@@ -188,13 +160,12 @@ def create_wall(player, move_string, list_of_players, board):
         return False
 
     player.walls_left -= 1
-    change_turn(list_of_players)
 
     return True
 
 
-def color_board_edges(list_of_players, board):
-    for player in list_of_players:
+def color_board_edges(board):
+    for player in board.player_list:
         if player.starting_edge == "north":
             for tile in board.tile_matrix[-1][1:-1]:  # south edge
                 tile.color = player.color
@@ -214,19 +185,19 @@ def color_board_edges(list_of_players, board):
     return
 
 
-def get_current_player(players_list):
-    for player in players_list:
+def get_current_player(board):
+    for player in board.player_list:
         if player.is_their_turn:
             return player
 
 
-def change_turn(list_of_players):
-    for player in list_of_players:
+def change_turn(board):
+    for player in board.player_list:
         if player.is_their_turn:
             player.is_their_turn = False
-            player_index = list_of_players.index(player)
-            if player_index != len(list_of_players) - 1:
-                list_of_players[player_index + 1].is_their_turn = True
+            player_index = board.player_list.index(player)
+            if player_index != len(board.player_list) - 1:
+                board.player_list[player_index + 1].is_their_turn = True
             else:
-                list_of_players[0].is_their_turn = True
+                board.player_list[0].is_their_turn = True
             return

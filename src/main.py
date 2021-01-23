@@ -49,32 +49,31 @@ def get_game_settings(quick_start):
     return game_settings
 
 
-def do_move(move_string, player_list, board):
-    player_to_move = Player.get_current_player(player_list)
-
-    board.move_list.append((player_to_move, move_string))
+def do_move(move_string, board):
+    player_to_move = Player.get_current_player(board)
 
     if move_string[0:2] == "m_":
-        valid_move = Player.move_piece(player_to_move, move_string[2:], player_list, board)
+        valid_move = Player.move_piece(player_to_move, move_string[2:], board)
         if not valid_move:
             return False
     elif move_string[0:4] == "w_v_" or move_string[0:4] == "w_h_":
-        valid_move = Player.create_wall(player_to_move, move_string[2:], player_list, board)
+        valid_move = Player.create_wall(player_to_move, move_string[2:], board)
         if not valid_move:
             return False
     elif move_string == "pass":
         pass
     else:
         return False
+
     return True
 
 
-def game_loop(player_list, board):
+def game_loop(board):
     valid_move = True  # so that board prints on the first turn
     while True:
         # print/update board if last move was valid
-        Player.add_players_to_board(player_list, board)
-        Board.print_board(board, player_list)
+        Player.add_players_to_board(board)
+        Board.print_board(board)
 
         # play
         move_string = input("Type a move > ")
@@ -84,10 +83,14 @@ def game_loop(player_list, board):
             # in this function so it doesnt say invalid move
             print(Text.move_help)
         else:
-            valid_move = do_move(move_string, player_list, board)
+            board.move_list.append((Player.get_current_player(board), move_string))
+            valid_move = do_move(move_string, board)
             os.system("cls")
             if not valid_move:
                 print(f"{Fore.RED}Invalid move, type help to see how to input moves")
+        
+        Player.change_turn(board)
+            
     return
 
 
@@ -99,13 +102,10 @@ if __name__ == "__main__":
     game_settings = get_game_settings(quick_start)
 
     # create the board
-    board = Board.Board(game_settings["rows"], game_settings["cols"])
-
-    # create the players
-    Player.create_players(game_settings["players"],
-                          game_settings["walls"], board)
+    board = Board.Board(game_settings["rows"], game_settings["cols"], game_settings["players"],
+                        game_settings["walls"])
 
     # play the game
-    game_loop(Player.list_of_players, board)
+    game_loop(board)
     print("Thank you for playing!")
-    time.sleep(2)
+    time.sleep(1)
