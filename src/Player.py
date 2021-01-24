@@ -16,6 +16,7 @@ class Player:
         self.starting_edge = starting_edge
         self.board = board
         self.piece_coordinates = {"row": 0, "col": 0}
+        self.starting_coordinates = {"row": 0, "col": 0}
         self.wall_list = []
         self.generate_starting_coordinates()
         board.player_list.append(self)
@@ -33,6 +34,7 @@ class Player:
         elif self.starting_edge == "west":
             self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
             self.piece_coordinates["col"] = 1
+        self.starting_coordinates = self.piece_coordinates
         return
 
     def __repr__(self):

@@ -31,24 +31,13 @@ class Board:
 
     def create_players(self, num_players, player_wall_count):
         if num_players == 2:
-            blue_player = Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
-            self.player_list.append(blue_player)
-
-            red_player = Player.Player("Red", player_wall_count, Fore.RED, False, "north", self)
-            self.player_list.append(red_player)
-
+            Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
+            Player.Player("Red", player_wall_count, Fore.RED, False, "north", self)
         elif num_players == 4:
-            blue_player = Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
-            self.player_list.append(blue_player)
-
-            red_player = Player.Player("Blue", player_wall_count, Fore.RED, False, "north", self)
-            self.player_list.append(red_player)
-
-            green_player = Player.Player("Blue", player_wall_count, Fore.GREEN, False, "east", self)
-            self.player_list.append(green_player)
-
-            yellow_player = Player.Player("Blue", player_wall_count, Fore.YELLOW, False, "west", self)
-            self.player_list.append(yellow_player)
+            Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
+            Player.Player("Blue", player_wall_count, Fore.RED, False, "north", self)
+            Player.Player("Blue", player_wall_count, Fore.GREEN, False, "east", self)
+            Player.Player("Blue", player_wall_count, Fore.YELLOW, False, "west", self)
         return
 
     def add_pieces_to_tile_matrix(self):
@@ -62,11 +51,11 @@ class Board:
         return
 
 
-    def add_walls_to_tile_matrix(board):
-        for player in board.player_list:
+    def add_walls_to_tile_matrix(self):
+        for player in self.player_list:
             for wall in player.wall_list:
-                for row in board.tile_matrix:
-                    if board.tile_matrix.index(row) == wall[0]:
+                for row in self.tile_matrix:
+                    if self.tile_matrix.index(row) == wall[0]:
                         for tile in row:
                             if row.index(tile) == wall[1]:
                                 tile.player_on = player
@@ -74,31 +63,43 @@ class Board:
         return
 
 
-    def add_players_to_board(board):
-
-        add_pieces_to_tile_matrix(board)
-        add_walls_to_tile_matrix(board)
-        color_board_edges(board)
-
+    def color_board_edges(self):
+        for player in self.player_list:
+            if player.starting_edge == "north":
+                for tile in self.tile_matrix[-1][1:-1]:  # south edge
+                    tile.color = player.color
+            elif player.starting_edge == "south":
+                for tile in self.tile_matrix[0][1:-1]:  # north edge
+                    tile.color = player.color
+            elif player.starting_edge == "east":  # east edge
+                for row in self.tile_matrix[1:-1]:
+                    for tile in row:
+                        if row.index(tile) == 0:
+                            tile.color = player.color
+            elif player.starting_edge == "west":   # west edge
+                for row in self.tile_matrix[1:-1]:
+                    for tile in row:
+                        if row.index(tile) == len(row) - 1:
+                            tile.color = player.color
         return
 
 
-    def check_for_wall_on_tile(player, board):
-        tile = board.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
+    def check_for_wall_on_tile(player, self):
+        tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
         if tile.player_on is not None:
             return True
         return False
 
 
-    def move_piece(player, direction, board):
+    def move_piece(player, direction, self):
 
-        current_tile = board.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
+        current_tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
         current_tile.player_on = None
         current_tile.color = Fore.BLACK
 
         if direction == "n":
             player.piece_coordinates["row"] -= 1
-            wall_on_tile = check_for_wall_on_tile(player, board)
+            wall_on_tile = self.check_for_wall_on_tile(player, self)
             if wall_on_tile:
                 player.piece_coordinates["row"] += 1
                 return False
@@ -107,7 +108,7 @@ class Board:
 
         elif direction == "s":
             player.piece_coordinates["row"] += 1
-            wall_on_tile = check_for_wall_on_tile(player, board)
+            wall_on_tile = self.check_for_wall_on_tile(player, self)
             if wall_on_tile:
                 player.piece_coordinates["row"] -= 1
                 return False
@@ -116,7 +117,7 @@ class Board:
 
         elif direction == "e":
             player.piece_coordinates["col"] += 1
-            wall_on_tile = check_for_wall_on_tile(player, board)
+            wall_on_tile = self.check_for_wall_on_tile(player, self)
             if wall_on_tile:
                 player.piece_coordinates["col"] -= 1
                 return False
@@ -125,7 +126,7 @@ class Board:
 
         elif direction == "w":
             player.piece_coordinates["col"] -= 1
-            wall_on_tile = check_for_wall_on_tile(player, board)
+            wall_on_tile = self.check_for_wall_on_tile(player, self)
             if wall_on_tile:
                 player.piece_coordinates["col"] += 1
                 return False
@@ -138,7 +139,7 @@ class Board:
         return True
 
 
-    def create_wall(player, move_string, board):
+    def create_wall(player, move_string, self):
         coordinates = move_string[2:]
 
         if player.walls_left == 0:
@@ -150,7 +151,7 @@ class Board:
             wall_col = (int(coordinates.split("_")[1]) * 2) - 1
 
             for num in [0, 1, 2]:
-                if board.tile_matrix[wall_row][wall_col + num].player_on is not None:
+                if self.tile_matrix[wall_row][wall_col + num].player_on is not None:
                     return False
 
             for num in [0, 1, 2]:
@@ -162,7 +163,7 @@ class Board:
             wall_col = (int(coordinates.split("_")[1]) * 2) - 2
 
             for num in [0, 1, 2]:
-                if board.tile_matrix[wall_row + num][wall_col].player_on is not None:
+                if self.tile_matrix[wall_row + num][wall_col].player_on is not None:
                     return False
 
             for num in [0, 1, 2]:
@@ -176,43 +177,36 @@ class Board:
         return True
 
 
-    def color_board_edges(board):
-        for player in board.player_list:
-            if player.starting_edge == "north":
-                for tile in board.tile_matrix[-1][1:-1]:  # south edge
-                    tile.color = player.color
-            elif player.starting_edge == "south":
-                for tile in board.tile_matrix[0][1:-1]:  # north edge
-                    tile.color = player.color
-            elif player.starting_edge == "east":  # east edge
-                for row in board.tile_matrix[1:-1]:
-                    for tile in row:
-                        if row.index(tile) == 0:
-                            tile.color = player.color
-            elif player.starting_edge == "west":   # west edge
-                for row in board.tile_matrix[1:-1]:
-                    for tile in row:
-                        if row.index(tile) == len(row) - 1:
-                            tile.color = player.color
-        return
-
-
-    def get_current_player(board):
-        for player in board.player_list:
+    def get_current_player(self):
+        for player in self.player_list:
             if player.is_their_turn:
                 return player
 
 
-    def change_turn(board):
-        for player in board.player_list:
+    def change_turn(self):
+        for player in self.player_list:
             if player.is_their_turn:
                 player.is_their_turn = False
-                player_index = board.player_list.index(player)
-                if player_index != len(board.player_list) - 1:
-                    board.player_list[player_index + 1].is_their_turn = True
+                player_index = self.player_list.index(player)
+                if player_index != len(self.player_list) - 1:
+                    self.player_list[player_index + 1].is_their_turn = True
                 else:
-                    board.player_list[0].is_their_turn = True
+                    self.player_list[0].is_their_turn = True
                 return
+
+
+    def reset_players(board):
+        for player in board.player_list:
+            player.wall_list = []
+            player.piece_coordinates = player.starting_coordinates
+
+    def add_players_to_self(self):
+
+        self.add_pieces_to_tile_matrix(self)
+        self.add_walls_to_tile_matrix(self)
+        self.color_board_edges(self)
+
+        return
 
 
 class Tile:

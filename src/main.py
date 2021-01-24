@@ -84,7 +84,7 @@ def game_loop(board):
             print(Text.move_help)
         else:
             board.move_list.append((Player.get_current_player(board), move_string))
-            valid_move = do_move(move_string, board)
+            valid_move = do_move(move_string, Player.get_current_player(board))
             os.system("cls")
             if not valid_move:
                 print(f"{Fore.RED}Invalid move, type help to see how to input moves")
