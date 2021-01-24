@@ -1,6 +1,5 @@
-import Player
-import Board
-import Text
+from board import Board, Player
+import text
 import os
 import colorama
 from colorama import Fore, Back, Style
@@ -11,11 +10,11 @@ colorama.init(autoreset=True)
 
 def process_user_input(user_input):
     if user_input == "rules":
-        print(Text.rules)
+        print(text.rules)
         user_input = input("> ")
         process_user_input(user_input)
     elif user_input == "help":
-        print(Text.help)
+        print(text.help)
         user_input = input("> ")
         process_user_input(user_input)
     elif user_input == "start":
@@ -50,14 +49,14 @@ def get_game_settings(quick_start):
 
 
 def do_move(move_string, board):
-    player_to_move = Player.get_current_player(board)
+    player_to_move = Board.get_current_player(board)
 
     if move_string[0:2] == "m_":
-        valid_move = Player.move_piece(player_to_move, move_string[2:], board)
+        valid_move = Board.move_piece(player_to_move, move_string[2:], board)
         if not valid_move:
             return False
     elif move_string[0:4] == "w_v_" or move_string[0:4] == "w_h_":
-        valid_move = Player.create_wall(player_to_move, move_string[2:], board)
+        valid_move = Board.create_wall(player_to_move, move_string[2:], board)
         if not valid_move:
             return False
     elif move_string == "pass":
@@ -72,7 +71,7 @@ def game_loop(board):
     valid_move = True  # so that board prints on the first turn
     while True:
         # print/update board if last move was valid
-        Player.add_players_to_board(board)
+        Board.add_players_to_board(board)
         Board.print_board(board)
 
         # play
@@ -81,28 +80,28 @@ def game_loop(board):
             break
         elif move_string == "help":
             # in this function so it doesnt say invalid move
-            print(Text.move_help)
+            print(text.move_help)
         else:
-            board.move_list.append((Player.get_current_player(board), move_string))
-            valid_move = do_move(move_string, Player.get_current_player(board))
+            board.move_list.append((Board.get_current_player(board), move_string))
+            valid_move = do_move(move_string, board)
             os.system("cls")
             if not valid_move:
                 print(f"{Fore.RED}Invalid move, type help to see how to input moves")
         
-        Player.change_turn(board)
+        Board.change_turn(board)
             
     return
 
 
 if __name__ == "__main__":
 
-    print(Text.welcome)
+    print(text.welcome)
     user_input = input("> ")
     quick_start = process_user_input(user_input)  # only returns if game starts
     game_settings = get_game_settings(quick_start)
 
     # create the board
-    board = Board.Board(game_settings["rows"], game_settings["cols"], game_settings["players"],
+    board = Board(game_settings["rows"], game_settings["cols"], game_settings["players"],
                         game_settings["walls"])
 
     # play the game

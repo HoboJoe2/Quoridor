@@ -1,6 +1,6 @@
 import colorama
-import Player
 from colorama import Fore, Back, Style
+import math
 
 colorama.init(autoreset=True)
 
@@ -31,13 +31,13 @@ class Board:
 
     def create_players(self, num_players, player_wall_count):
         if num_players == 2:
-            Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
-            Player.Player("Red", player_wall_count, Fore.RED, False, "north", self)
+            Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
+            Player("Red", player_wall_count, Fore.RED, False, "north", self)
         elif num_players == 4:
-            Player.Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
-            Player.Player("Blue", player_wall_count, Fore.RED, False, "north", self)
-            Player.Player("Blue", player_wall_count, Fore.GREEN, False, "east", self)
-            Player.Player("Blue", player_wall_count, Fore.YELLOW, False, "west", self)
+            Player("Blue", player_wall_count, Fore.BLUE, True, "south", self)
+            Player("Blue", player_wall_count, Fore.RED, False, "north", self)
+            Player("Blue", player_wall_count, Fore.GREEN, False, "east", self)
+            Player("Blue", player_wall_count, Fore.YELLOW, False, "west", self)
         return
 
     def add_pieces_to_tile_matrix(self):
@@ -84,7 +84,7 @@ class Board:
         return
 
 
-    def check_for_wall_on_tile(player, self):
+    def check_for_wall_on_tile(self, player):
         tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
         if tile.player_on is not None:
             return True
@@ -99,7 +99,7 @@ class Board:
 
         if direction == "n":
             player.piece_coordinates["row"] -= 1
-            wall_on_tile = self.check_for_wall_on_tile(player, self)
+            wall_on_tile = self.check_for_wall_on_tile(player)
             if wall_on_tile:
                 player.piece_coordinates["row"] += 1
                 return False
@@ -195,18 +195,106 @@ class Board:
                 return
 
 
-    def reset_players(board):
-        for player in board.player_list:
+    def reset_players(self):
+        for player in self.player_list:
             player.wall_list = []
             player.piece_coordinates = player.starting_coordinates
+        return
 
-    def add_players_to_self(self):
 
-        self.add_pieces_to_tile_matrix(self)
-        self.add_walls_to_tile_matrix(self)
-        self.color_board_edges(self)
+    def add_players_to_board(self):
+
+        self.add_pieces_to_tile_matrix()
+        self.add_walls_to_tile_matrix()
+        self.color_board_edges()
 
         return
+
+    
+    def print_board(board):
+        print()
+
+        row_indicator_length = 0
+        for row in board.tile_matrix:
+            row_indicator_length = len(str(board.tile_matrix.index(row)))
+
+        col_indicators = []
+        for empty_col in range(row_indicator_length + 1):
+            col_indicators.append(" ")
+
+        col_number = 0
+        for col in range(len(board.tile_matrix[0])):
+            if col % 2 != 0:
+                col_number += 1
+                col_indicators.append(col_number)
+            else:
+                col_indicators.append(" ")
+
+        for char in col_indicators:
+            print(f"{Fore.LIGHTBLACK_EX}{char}", end="")
+
+        print()
+
+        row_indicator_number = 0
+        for row in board.tile_matrix:
+            if board.tile_matrix.index(row) % 2 != 0:
+                row_indicator_number += 1
+                row_indicator = str(row_indicator_number) + (" " * (row_indicator_length - len(str(row_indicator_number))))
+            else:
+                row_indicator = " " * row_indicator_length
+            print(f"{Fore.LIGHTBLACK_EX}{row_indicator} ", end="")
+            for tile in row:
+                print(tile.color + tile.char, end="")
+            print()
+
+        print()
+
+        for player in board.player_list:
+            print(f"{player.color}Walls left: {player.walls_left}")
+
+        print()
+        for player in board.player_list:
+            if player.is_their_turn:
+                print(f"{player.color}{player.name} to move...")
+        print()
+
+        return
+
+
+class Player:
+
+    def __init__(self, name, walls_left, color, goes_first, starting_edge, board):
+        self.name = name
+        self.walls_left = walls_left
+        self.color = color
+        self.is_their_turn = goes_first
+        self.starting_edge = starting_edge
+        self.board = board
+        self.piece_coordinates = {"row": 0, "col": 0}
+        self.starting_coordinates = {"row": 0, "col": 0}
+        self.wall_list = []
+        self.generate_starting_coordinates()
+        board.player_list.append(self)
+
+    def generate_starting_coordinates(self):
+        if self.starting_edge == "south":
+            self.piece_coordinates["row"] = self.board.actual_rows - 2
+            self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
+        elif self.starting_edge == "north":
+            self.piece_coordinates["row"] = 1
+            self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
+        elif self.starting_edge == "east":
+            self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
+            self.piece_coordinates["col"] = self.board.actual_cols - 2
+        elif self.starting_edge == "west":
+            self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
+            self.piece_coordinates["col"] = 1
+        self.starting_coordinates = self.piece_coordinates
+        return
+
+    def __repr__(self):
+        return f"Player({self.color}, {self.is_their_turn}, {self.piece_coordinates})"
+
 
 
 class Tile:
@@ -253,53 +341,3 @@ class Tile:
             elif self.row % 2 == 0 and self.col % 2 == 0:  # on an intersection
                 self.char = "+"
         return
-
-
-def print_board(board):
-    print()
-
-    row_indicator_length = 0
-    for row in board.tile_matrix:
-        row_indicator_length = len(str(board.tile_matrix.index(row)))
-
-    col_indicators = []
-    for empty_col in range(row_indicator_length + 1):
-        col_indicators.append(" ")
-
-    col_number = 0
-    for col in range(len(board.tile_matrix[0])):
-        if col % 2 != 0:
-            col_number += 1
-            col_indicators.append(col_number)
-        else:
-            col_indicators.append(" ")
-
-    for char in col_indicators:
-        print(f"{Fore.LIGHTBLACK_EX}{char}", end="")
-
-    print()
-
-    row_indicator_number = 0
-    for row in board.tile_matrix:
-        if board.tile_matrix.index(row) % 2 != 0:
-            row_indicator_number += 1
-            row_indicator = str(row_indicator_number) + (" " * (row_indicator_length - len(str(row_indicator_number))))
-        else:
-            row_indicator = " " * row_indicator_length
-        print(f"{Fore.LIGHTBLACK_EX}{row_indicator} ", end="")
-        for tile in row:
-            print(tile.color + tile.char, end="")
-        print()
-
-    print()
-
-    for player in board.player_list:
-        print(f"{player.color}Walls left: {player.walls_left}")
-
-    print()
-    for player in board.player_list:
-        if player.is_their_turn:
-            print(f"{player.color}{player.name} to move...")
-    print()
-
-    return
