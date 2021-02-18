@@ -1,4 +1,4 @@
-from board import Board, Player
+from board import Board
 import text
 import os
 import colorama
@@ -41,10 +41,14 @@ def get_game_settings(quick_start):
         game_settings["players"] = 2
         game_settings["walls"] = 10
     else:
-        game_settings["rows"] = int(input("How many rows should the board have (odd number)? > "))
-        game_settings["cols"] = int(input("How many columns should the board have (odd number)? > "))
-        game_settings["players"] = int(input("How many players should the game have (2 or 4)? > "))
-        game_settings["walls"] = int(input("How many walls should each player have? > "))
+        game_settings["rows"] = int(
+            input("How many rows should the board have (odd number)? > "))
+        game_settings["cols"] = int(
+            input("How many columns should the board have (odd number)? > "))
+        game_settings["players"] = int(
+            input("How many players should the game have (2 or 4)? > "))
+        game_settings["walls"] = int(
+            input("How many walls should each player have? > "))
     return game_settings
 
 
@@ -52,11 +56,11 @@ def do_move(move_string, board):
     player_to_move = Board.get_current_player(board)
 
     if move_string[0:2] == "m_":
-        valid_move = Board.move_piece(player_to_move, move_string[2:], board)
+        valid_move = Board.move_piece(board, move_string[2:], player_to_move)
         if not valid_move:
             return False
     elif move_string[0:4] == "w_v_" or move_string[0:4] == "w_h_":
-        valid_move = Board.create_wall(player_to_move, move_string[2:], board)
+        valid_move = Board.create_wall(board, move_string[2:], player_to_move)
         if not valid_move:
             return False
     elif move_string == "pass":
@@ -82,14 +86,15 @@ def game_loop(board):
             # in this function so it doesnt say invalid move
             print(text.move_help)
         else:
-            board.move_list.append((Board.get_current_player(board), move_string))
+            board.move_list.append(
+                (Board.get_current_player(board), move_string))
             valid_move = do_move(move_string, board)
             os.system("cls")
             if not valid_move:
                 print(f"{Fore.RED}Invalid move, type help to see how to input moves")
-        
+
         Board.change_turn(board)
-            
+
     return
 
 
@@ -102,7 +107,7 @@ if __name__ == "__main__":
 
     # create the board
     board = Board(game_settings["rows"], game_settings["cols"], game_settings["players"],
-                        game_settings["walls"])
+                  game_settings["walls"])
 
     # play the game
     game_loop(board)

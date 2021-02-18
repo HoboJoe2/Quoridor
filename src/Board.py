@@ -50,7 +50,6 @@ class Board:
                             tile.color = player.color
         return
 
-
     def add_walls_to_tile_matrix(self):
         for player in self.player_list:
             for wall in player.wall_list:
@@ -61,7 +60,6 @@ class Board:
                                 tile.player_on = player
                                 tile.color = player.color
         return
-
 
     def color_board_edges(self):
         for player in self.player_list:
@@ -83,17 +81,17 @@ class Board:
                             tile.color = player.color
         return
 
-
     def check_for_wall_on_tile(self, player):
-        tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
+        tile = self.tile_matrix[player.piece_coordinates["row"]
+                                ][player.piece_coordinates["col"]]
         if tile.player_on is not None:
             return True
         return False
 
+    def move_piece(self, direction, player):
 
-    def move_piece(player, direction, self):
-
-        current_tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
+        current_tile = self.tile_matrix[player.piece_coordinates["row"]
+                                        ][player.piece_coordinates["col"]]
         current_tile.player_on = None
         current_tile.color = Fore.BLACK
 
@@ -108,7 +106,7 @@ class Board:
 
         elif direction == "s":
             player.piece_coordinates["row"] += 1
-            wall_on_tile = self.check_for_wall_on_tile(player, self)
+            wall_on_tile = self.check_for_wall_on_tile(player)
             if wall_on_tile:
                 player.piece_coordinates["row"] -= 1
                 return False
@@ -117,7 +115,7 @@ class Board:
 
         elif direction == "e":
             player.piece_coordinates["col"] += 1
-            wall_on_tile = self.check_for_wall_on_tile(player, self)
+            wall_on_tile = self.check_for_wall_on_tile(player)
             if wall_on_tile:
                 player.piece_coordinates["col"] -= 1
                 return False
@@ -126,7 +124,7 @@ class Board:
 
         elif direction == "w":
             player.piece_coordinates["col"] -= 1
-            wall_on_tile = self.check_for_wall_on_tile(player, self)
+            wall_on_tile = self.check_for_wall_on_tile(player)
             if wall_on_tile:
                 player.piece_coordinates["col"] += 1
                 return False
@@ -138,8 +136,7 @@ class Board:
 
         return True
 
-
-    def create_wall(player, move_string, self):
+    def create_wall(self, move_string, player):
         coordinates = move_string[2:]
 
         if player.walls_left == 0:
@@ -176,12 +173,10 @@ class Board:
 
         return True
 
-
     def get_current_player(self):
         for player in self.player_list:
             if player.is_their_turn:
                 return player
-
 
     def change_turn(self):
         for player in self.player_list:
@@ -194,13 +189,11 @@ class Board:
                     self.player_list[0].is_their_turn = True
                 return
 
-
     def reset_players(self):
         for player in self.player_list:
             player.wall_list = []
             player.piece_coordinates = player.starting_coordinates
         return
-
 
     def add_players_to_board(self):
 
@@ -210,20 +203,19 @@ class Board:
 
         return
 
-    
-    def print_board(board):
+    def print_board(self):
         print()
 
         row_indicator_length = 0
-        for row in board.tile_matrix:
-            row_indicator_length = len(str(board.tile_matrix.index(row)))
+        for row in self.tile_matrix:
+            row_indicator_length = len(str(self.tile_matrix.index(row)))
 
         col_indicators = []
         for empty_col in range(row_indicator_length + 1):
             col_indicators.append(" ")
 
         col_number = 0
-        for col in range(len(board.tile_matrix[0])):
+        for col in range(len(self.tile_matrix[0])):
             if col % 2 != 0:
                 col_number += 1
                 col_indicators.append(col_number)
@@ -236,10 +228,11 @@ class Board:
         print()
 
         row_indicator_number = 0
-        for row in board.tile_matrix:
-            if board.tile_matrix.index(row) % 2 != 0:
+        for row in self.tile_matrix:
+            if self.tile_matrix.index(row) % 2 != 0:
                 row_indicator_number += 1
-                row_indicator = str(row_indicator_number) + (" " * (row_indicator_length - len(str(row_indicator_number))))
+                row_indicator = str(row_indicator_number) + (" " *
+                                                             (row_indicator_length - len(str(row_indicator_number))))
             else:
                 row_indicator = " " * row_indicator_length
             print(f"{Fore.LIGHTBLACK_EX}{row_indicator} ", end="")
@@ -249,11 +242,11 @@ class Board:
 
         print()
 
-        for player in board.player_list:
+        for player in self.player_list:
             print(f"{player.color}Walls left: {player.walls_left}")
 
         print()
-        for player in board.player_list:
+        for player in self.player_list:
             if player.is_their_turn:
                 print(f"{player.color}{player.name} to move...")
         print()
@@ -279,22 +272,25 @@ class Player:
     def generate_starting_coordinates(self):
         if self.starting_edge == "south":
             self.piece_coordinates["row"] = self.board.actual_rows - 2
-            self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
+            self.piece_coordinates["col"] = math.floor(
+                self.board.actual_cols / 2)
         elif self.starting_edge == "north":
             self.piece_coordinates["row"] = 1
-            self.piece_coordinates["col"] = math.floor(self.board.actual_cols / 2)
+            self.piece_coordinates["col"] = math.floor(
+                self.board.actual_cols / 2)
         elif self.starting_edge == "east":
-            self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
+            self.piece_coordinates["row"] = math.floor(
+                self.board.actual_rows / 2)
             self.piece_coordinates["col"] = self.board.actual_cols - 2
         elif self.starting_edge == "west":
-            self.piece_coordinates["row"] = math.floor(self.board.actual_rows / 2)
+            self.piece_coordinates["row"] = math.floor(
+                self.board.actual_rows / 2)
             self.piece_coordinates["col"] = 1
         self.starting_coordinates = self.piece_coordinates
         return
 
     def __repr__(self):
         return f"Player({self.color}, {self.is_their_turn}, {self.piece_coordinates})"
-
 
 
 class Tile:
