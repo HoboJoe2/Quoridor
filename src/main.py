@@ -1,8 +1,8 @@
-from board import Board
-import text
+from Board import Board
+import Text as text
 import os
 import colorama
-from colorama import Fore, Back, Style
+from colorama import Fore
 import time
 
 colorama.init(autoreset=True)
@@ -99,7 +99,6 @@ def game_loop(board):
 
 
 if __name__ == "__main__":
-
     print(text.welcome)
     user_input = input("> ")
     quick_start = process_user_input(user_input)  # only returns if game starts
