@@ -1,6 +1,6 @@
 """Includes strings used in other files"""
 
-from colorama import Fore, Back, Style
+from colorama import Fore
 
 welcome = """
 Welcome to Quoridor, type help to see a list of commands.

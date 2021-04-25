@@ -1,5 +1,5 @@
 from Board import Board
-import Text as text
+import Text
 import os
 import colorama
 from colorama import Fore
@@ -10,11 +10,11 @@ colorama.init(autoreset=True)
 
 def process_user_input(user_input):
     if user_input == "rules":
-        print(text.rules)
+        print(Text.rules)
         user_input = input("> ")
         process_user_input(user_input)
     elif user_input == "help":
-        print(text.help)
+        print(Text.help)
         user_input = input("> ")
         process_user_input(user_input)
     elif user_input == "start":
@@ -84,7 +84,7 @@ def game_loop(board):
             break
         elif move_string == "help":
             # in this function so it doesnt say invalid move
-            print(text.move_help)
+            print(Text.move_help)
         else:
             board.move_list.append(
                 (Board.get_current_player(board), move_string))
@@ -98,8 +98,8 @@ def game_loop(board):
     return
 
 
-if __name__ == "__main__":
-    print(text.welcome)
+def main():
+    print(Text.welcome)
     user_input = input("> ")
     quick_start = process_user_input(user_input)  # only returns if game starts
     game_settings = get_game_settings(quick_start)
@@ -112,3 +112,7 @@ if __name__ == "__main__":
     game_loop(board)
     print("Thank you for playing!")
     time.sleep(1)
+
+
+if __name__ == "__main__":
+    main()
