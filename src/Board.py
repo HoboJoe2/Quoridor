@@ -1,5 +1,5 @@
 import colorama
-from colorama import Fore, Back, Style
+from colorama import Fore
 import math
 
 colorama.init(autoreset=True)
@@ -74,7 +74,7 @@ class Board:
                     for tile in row:
                         if row.index(tile) == 0:
                             tile.color = player.color
-            elif player.starting_edge == "west":   # west edge
+            elif player.starting_edge == "west":  # west edge
                 for row in self.tile_matrix[1:-1]:
                     for tile in row:
                         if row.index(tile) == len(row) - 1:
@@ -82,16 +82,14 @@ class Board:
         return
 
     def check_for_wall_on_tile(self, player):
-        tile = self.tile_matrix[player.piece_coordinates["row"]
-                                ][player.piece_coordinates["col"]]
+        tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
         if tile.player_on is not None:
             return True
         return False
 
     def move_piece(self, direction, player):
 
-        current_tile = self.tile_matrix[player.piece_coordinates["row"]
-                                        ][player.piece_coordinates["col"]]
+        current_tile = self.tile_matrix[player.piece_coordinates["row"]][player.piece_coordinates["col"]]
         current_tile.player_on = None
         current_tile.color = Fore.BLACK
 
@@ -195,7 +193,7 @@ class Board:
             player.piece_coordinates = player.starting_coordinates
         return
 
-    def add_players_to_board(self):
+    def refresh_board(self):
 
         self.add_pieces_to_tile_matrix()
         self.add_walls_to_tile_matrix()
@@ -267,7 +265,7 @@ class Player:
         self.starting_coordinates = {"row": 0, "col": 0}
         self.wall_list = []
         self.generate_starting_coordinates()
-        board.player_list.append(self)
+        self.board.player_list.append(self)
 
     def generate_starting_coordinates(self):
         if self.starting_edge == "south":
@@ -305,10 +303,6 @@ class Tile:
         self.color = f"{Fore.MAGENTA}"
         self.set_initial_attributes()
 
-    def __repr__(self):
-        return f"""Tile({self.row}, {self.col},
-        {self.color}{self.char} {self.board})"""
-
     def set_initial_attributes(self):
 
         # idk why -2 not -1, maybe something to do with list index
@@ -337,3 +331,7 @@ class Tile:
             elif self.row % 2 == 0 and self.col % 2 == 0:  # on an intersection
                 self.char = "+"
         return
+
+    def __repr__(self):
+        return f"""Tile({self.row}, {self.col},
+        {self.color}{self.char} {self.board})"""

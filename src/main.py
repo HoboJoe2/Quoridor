@@ -8,48 +8,32 @@ import time
 colorama.init(autoreset=True)
 
 
-def process_user_input(user_input):
+def get_pregame_input():
+    user_input = input("> ")
     if user_input == "rules":
         print(Text.rules)
-        user_input = input("> ")
-        process_user_input(user_input)
+        get_pregame_input()
     elif user_input == "help":
         print(Text.help)
-        user_input = input("> ")
-        process_user_input(user_input)
+        get_pregame_input()
     elif user_input == "start":
-        quick_start = input("Use default settings? (Y/N) > ")
-        if quick_start == "Y":
-            return True
-        elif quick_start == "N":
-            return False
+        game_settings = {"rows": 9, "cols": 9, "players": 2, "walls": 10}
+        user_input = input("Type 'Y' to use custom game settings, press enter to use default settings > ")
+        if user_input == "Y":
+            game_settings["rows"] = int(
+                input("How many rows should the board have (odd number)? > "))
+            game_settings["cols"] = int(
+                input("How many columns should the board have (odd number)? > "))
+            game_settings["players"] = int(
+                input("How many players should the game have (2 or 4)? > "))
+            game_settings["walls"] = int(
+                input("How many walls should each player have? > "))
         else:
-            print("Invalid input, type 'Y' or 'N'")
-            user_input = input("> ")
-            process_user_input(user_input)
+            pass
+        return game_settings
     else:
         print("Invalid input, type help to see a list of valid commands.")
-        user_input = input("> ")
-        process_user_input(user_input)
-
-
-def get_game_settings(quick_start):
-    game_settings = {"rows": 0, "cols": 0, "players": 0, "walls": 0}
-    if quick_start:
-        game_settings["rows"] = 9
-        game_settings["cols"] = 9
-        game_settings["players"] = 2
-        game_settings["walls"] = 10
-    else:
-        game_settings["rows"] = int(
-            input("How many rows should the board have (odd number)? > "))
-        game_settings["cols"] = int(
-            input("How many columns should the board have (odd number)? > "))
-        game_settings["players"] = int(
-            input("How many players should the game have (2 or 4)? > "))
-        game_settings["walls"] = int(
-            input("How many walls should each player have? > "))
-    return game_settings
+        get_pregame_input()
 
 
 def do_move(move_string, board):
@@ -75,7 +59,7 @@ def game_loop(board):
     valid_move = True  # so that board prints on the first turn
     while True:
         # print/update board if last move was valid
-        Board.add_players_to_board(board)
+        Board.refresh_board(board)
         Board.print_board(board)
 
         # play
@@ -100,13 +84,10 @@ def game_loop(board):
 
 def main():
     print(Text.welcome)
-    user_input = input("> ")
-    quick_start = process_user_input(user_input)  # only returns if game starts
-    game_settings = get_game_settings(quick_start)
+    game_settings = get_pregame_input()
 
     # create the board
-    board = Board(game_settings["rows"], game_settings["cols"], game_settings["players"],
-                  game_settings["walls"])
+    board = Board(*[v for k, v in game_settings.items()])
 
     # play the game
     game_loop(board)
