@@ -6,11 +6,12 @@ colorama.init(autoreset=True)
 
 
 class Board:
-    def __init__(self, num_rows, num_cols, num_players, player_wall_count):
+    def __init__(self, num_rows, num_cols, num_players, player_wall_count, game_settings):
         self.num_rows = num_rows
         self.num_cols = num_cols
         self.actual_rows = ((self.num_rows * 2) + 1)
         self.actual_cols = ((self.num_cols * 2) + 1)
+        self.game_settings = game_settings
         self.tile_matrix = []
         self.move_list = []
         self.player_list = []
